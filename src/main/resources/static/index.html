@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Chat</title>
+	<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <style>
+    	.row-custom {
+    		position: absolute;
+    		height: 75%;
+    		width: 100%;
+    		top: 50px;
+    		left: 0;
+    	}
+    	#conversation {
+    		max-height: 90%;
+    		margin: 5px 3px;
+    		padding: 0px 10px;
+    		overflow: scroll;
+    		word-wrap: break-word;
+    	}
+    	.boxText {
+    		display: block;
+    		width: 100%;
+    	}
+    </style>
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12">
+			<nav class="navbar navbar-default navbar-fixed-top">
+  				<div class="container-fluid">
+    				<div class="navbar-header">
+      					<a class="navbar-brand" href="">
+      						<i class="fa fa-commenting" aria-hidden="true"></i>
+      					</a>
+      					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
+        					<span class="sr-only">Toggle navigation</span>
+        					<span class="icon-bar"></span>
+        					<span class="icon-bar"></span>
+        					<span class="icon-bar"></span>
+      					</button>
+    				</div>
+    				<div class="collapse navbar-collapse" id="navbar-collapse">
+    					<form class="navbar-form navbar-left">
+        					<div class="form-group">
+        						<label for="yourId">Your id:</label>
+          						<input type="text" id="yourId" class="form-control" placeholder="Your id here...">
+        					</div>
+        					<button type="button" id="connect" class="btn btn-default">Connect</button>
+      					</form>
+    				</div>
+  				</div>
+			</nav>
+		</div>
+	</div>
+	<div class="row-custom">
+		<div id="conversation">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<nav class="navbar navbar-default navbar-fixed-bottom">
+  				<div class="container-fluid">
+    				<div class="navbar-collapse" id="">
+    					<form class="form-herizontal">
+        					<div class="form-group">
+        						<label for="message" class="col-sm-2">Message:</label>
+        						<div class="col-sm-10">
+        							<input type="text" id="message" class="form-control" placeholder="Message here..." 
+        								disabled onkeypress="keyPressListener(event)">
+        							<button type="button" id="send" class="btn btn-default" disabled>Send</button>
+        						</div>
+        					</div>
+        					
+      					</form>
+    				</div>
+  				</div>
+			</nav>
+		</div>
+	</div>
+	<script>
+	var stompClient = null;
+	var userId = null;
+	
+	$(function() {
+		$("form").on('submit', function (e) {
+	        e.preventDefault();
+	    });
+		
+		// init websocket
+		$('#connect').click(function() {
+			var socket = new SockJS('/chat');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function(frame) {
+			    console.log('Connected: ' + frame);
+			    stompClient.subscribe('/chatting/msg', function (resp) {
+			    	var message = JSON.parse(resp.body);
+			    	console.log(JSON.stringify(resp.body));
+			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>');
+			    });
+			});
+			
+			userId = $('#yourId').val();
+			$(this).prop("disabled", true);
+			$('#yourId').prop("disabled", true);
+			$('#message').prop("disabled", false);
+			$('#send').prop("disabled", false);
+		});
+		
+		$('#send').click(function() {
+			stompClient.send("/app/typing", {}, JSON.stringify({'userId': userId, 'msg': $('#message').val()}));
+			$('#message').val("").focus();
+		});
+	});
+	function keyPressListener(e) {
+		if (e.keyCode == 13) {
+			$('#send').trigger('click');
+		}
+	}
+	</script>
+</body>
+</html>

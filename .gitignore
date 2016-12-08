@@ -1,0 +1,20 @@
+# mac
+.DS_Store
+
+# eclipse project
+.classpath
+.project
+.settings/
+**/.settings/
+bin/
+**/bin/
+
+# maven
+target/
+**/target/
+
+# gradle
+.gradle/
+**/gradle/
+build/
+**/build/

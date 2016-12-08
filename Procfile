@@ -1,0 +1,1 @@
+web: java $JAVA_OPTS -jar build/libs/livinote-chat-*.jar --server.port=$PORT
