@@ -12,6 +12,9 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <style>
+    	.row {
+    		margin: 0;
+    	}
     	.row-custom {
     		position: absolute;
     		height: 75%;
@@ -103,8 +106,8 @@
 			    console.log('Connected: ' + frame);
 			    stompClient.subscribe('/chatting/msg', function (resp) {
 			    	var message = JSON.parse(resp.body);
-			    	console.log(JSON.stringify(resp.body));
-			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>');
+			    	//console.log(JSON.stringify(resp.body));
+			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 			    });
 			});
 			
