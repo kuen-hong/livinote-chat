@@ -16,8 +16,8 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import com.kuenhong.chat.bean.Message;
 
 /**
- * there are 3 events, 
- * @code SessionConnectEvent, SessionConnectedEvent, SessionDisconnectEvent
+ * there are many kinds of events, 
+ * @see http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/html/websocket.html#websocket-stomp-appplication-context-events
  *
  */
 @Component
