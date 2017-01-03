@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Hello Thymeleaf!</title>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+   	<script>
+   		/* var socket = new SockJS('/chat');
+		var stompClient = Stomp.over(socket);
+		stompClient.connect({}, function(frame) {
+	    	console.log('Connected: ' + frame);
+	    	stompClient.subscribe('/chatting/msg', function (resp) {
+	    		console.log(JSON.stringify(resp.body));
+	    	});
+		});
+		
+		$(function() {
+			$('#postHello').click(function() {
+				$.ajax({
+					url: './postHello',
+					method: 'POST',
+					cache: false,
+					contentType: 'application/json; charset=UTF-8',
+					dataType: 'json',
+					data: JSON.stringify({'userId': $('#userId').val(), 'msg': 'hello to you'}),
+					success: function(resp) {
+						console.log(resp);
+					}, 
+					error: function(e) {
+						console.log(e);
+					}
+				})
+			});
+		}); */
+   	</script>
+</head>
+<body>
+    <p th:text="'Hello, ' + ${name} + '!'">hello, your name</p>
+    <table>
+    	<tr>
+    		<th>Book name</th>
+    	</tr>
+    	<tr th:each="book : ${books}">
+    		<td th:text="${book}">book name</td>
+    	</tr>
+    </table>
+    <input type="text" name="userId" id="userId">
+    <br>
+    <img src="" alt="test img">
+    <button type="button" id="postHello">click to send</button>
+</body>
+</html>

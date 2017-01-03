@@ -102,7 +102,7 @@
 		$('#connect').click(function() {
 			var socket = new SockJS('/chat');
 			stompClient = Stomp.over(socket);
-			stompClient.connect({}, function(frame) {
+			stompClient.connect({'userId': $('#yourId').val()}, function(frame) {
 			    console.log('Connected: ' + frame);
 			    stompClient.subscribe('/chatting/msg', function (resp) {
 			    	var message = JSON.parse(resp.body);
