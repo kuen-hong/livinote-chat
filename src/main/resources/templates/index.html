@@ -7,14 +7,14 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
    	<script>
-   		/* var socket = new SockJS('/chat');
+   		var socket = new SockJS('/chat');
 		var stompClient = Stomp.over(socket);
 		stompClient.connect({}, function(frame) {
 	    	console.log('Connected: ' + frame);
-	    	stompClient.subscribe('/chatting/msg', function (resp) {
+	    	stompClient.subscribe('/topic/activeUsers', function (resp) {
 	    		console.log(JSON.stringify(resp.body));
 	    	});
-		}); */
+		});
 		
 		$(function() {
 			$('#postHello').click(function() {

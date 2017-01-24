@@ -1,4 +1,4 @@
-package com.kuenhong.chat;
+package com.kuenhong.chat.config;
 
 import java.security.Principal;
 
@@ -15,6 +15,7 @@ public class PresenceChannelInterceptor extends ChannelInterceptorAdapter {
 
 	private final Log LOGGER = LogFactory.getLog(PresenceChannelInterceptor.class);
 	
+	/*
 	@Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
 //		StompHeaderAccessor accessor = 
@@ -27,6 +28,7 @@ public class PresenceChannelInterceptor extends ChannelInterceptorAdapter {
 
 		return message;
 	}
+	*/
 	
 	@Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {

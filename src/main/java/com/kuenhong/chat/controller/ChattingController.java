@@ -5,6 +5,7 @@ import java.security.Principal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -20,8 +21,7 @@ public class ChattingController {
 
 	@MessageMapping("/typing")
 	@SendTo("/chatting/msg")
-	public Message receiveMsg(Message msg, SimpMessageHeaderAccessor headerAccessor, Principal principal) {
-		LOG.info(principal.getName());
+	public Message receiveMsg(@Payload Message msg, SimpMessageHeaderAccessor headerAccessor) {
 		LOG.info(headerAccessor);
 		return msg;
 	}

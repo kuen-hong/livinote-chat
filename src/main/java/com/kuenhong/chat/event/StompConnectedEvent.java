@@ -1,4 +1,4 @@
-package com.kuenhong.chat;
+package com.kuenhong.chat.event;
 
 import java.util.List;
 import java.util.Map;
@@ -27,19 +27,23 @@ public class StompConnectedEvent implements ApplicationListener<SessionConnected
 	
 	@Autowired
 	SimpMessagingTemplate msgTemplate;
+	@Autowired
+	ActiveUserRepository activeUserRepository;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void onApplicationEvent(SessionConnectedEvent event) {
 		StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-		LOG.info(headers);
 		GenericMessage genericMsg = (GenericMessage)headers.getMessageHeaders().get("simpConnectMessage");
 		Map<String, List<String>> nativeHeaders = (Map<String, List<String>>)genericMsg.getHeaders().get("nativeHeaders");
+		LOG.info("in StompConnectedEvent, headers="+headers);
 		// custom header
-		String userId = nativeHeaders.get("userId").get(0);
-		LOG.info(userId);
-		
-		msgTemplate.convertAndSend("/chatting/msg", new Message("", String.format("hello all, %s login.", userId)));
+		if (nativeHeaders.get("userId") != null) {
+			String userId = nativeHeaders.get("userId").get(0);
+			activeUserRepository.addUser(headers.getSessionId(), userId);
+			msgTemplate.convertAndSend("/chatting/msg", new Message("", String.format("hello all, %s login.", userId)));
+			msgTemplate.convertAndSend("/topic/activeUsers", activeUserRepository.getActiveUsers());
+		}
 	}
 
 }

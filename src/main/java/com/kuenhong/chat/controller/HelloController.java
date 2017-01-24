@@ -2,9 +2,13 @@ package com.kuenhong.chat.controller;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,13 +20,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kuenhong.chat.bean.ActiveUser;
 import com.kuenhong.chat.bean.Message;
+import com.kuenhong.chat.event.ActiveUserRepository;
 
 @Controller
 public class HelloController {
 	
+	private final Log LOG = LogFactory.getLog(HelloController.class);
+	
 	@Autowired
 	SimpMessagingTemplate msgTemplate;
+	@Autowired
+	ActiveUserRepository activeUserRepository;
 
 	@GetMapping("/hello")
 	public String indexPage(Model model, @RequestParam(value = "id", required = false) String id) {
@@ -54,6 +64,12 @@ public class HelloController {
 		//msgTemplate.convertAndSendToUser(msg.getUserId() , "/chatting/specUser", new Message("", "hi, "+msg.getUserId()), headerAccessor.getMessageHeaders());
 		msgTemplate.convertAndSendToUser(msg.getUserId(), "/queue/specUser", new Message("", "fuck you message."));
 		return map;
+	}
+	
+	@SendTo("/topic/activeUsers")
+	public List<ActiveUser> getConnectedUsers() {
+		LOG.info("execute getConnectedUsers");
+		return activeUserRepository.getActiveUsers();
 	}
 	
 }

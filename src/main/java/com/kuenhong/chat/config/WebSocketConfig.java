@@ -1,4 +1,4 @@
-package com.kuenhong.chat;
+package com.kuenhong.chat.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +7,8 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+
+import com.kuenhong.chat.event.ActiveUserRepository;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -43,5 +45,10 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         registration.taskExecutor().corePoolSize(8);
         registration.setInterceptors(presenceChannelInterceptor());
     }
+    
+    @Bean(name = "activeUserRepository")
+	public ActiveUserRepository activeUserRepository() {
+		return new ActiveUserRepository();
+	}
 
 }
