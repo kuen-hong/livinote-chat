@@ -1,6 +1,8 @@
 package com.kuenhong.chat.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -42,13 +44,16 @@ public class HelloController {
 	
 	@ResponseBody
 	@PostMapping("/postHello")
-	public Message postHello(@RequestBody Message msg) {
+	public Map<String, Object> postHello(@RequestBody Message msg) {
+		Map<String, Object> map = new HashMap<>();
+		map.put("status", Boolean.TRUE);
 		System.out.println(msg);
 		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
 		headerAccessor.setSessionId(msg.getUserId());
 		headerAccessor.setLeaveMutable(true);
-		msgTemplate.convertAndSendToUser(msg.getUserId() , "/chatting/msg", new Message("", "hi, "+msg.getUserId()), headerAccessor.getMessageHeaders());
-		return new Message("", msg.getMsg());
+		//msgTemplate.convertAndSendToUser(msg.getUserId() , "/chatting/specUser", new Message("", "hi, "+msg.getUserId()), headerAccessor.getMessageHeaders());
+		msgTemplate.convertAndSendToUser(msg.getUserId(), "/queue/specUser", new Message("", "fuck you message."));
+		return map;
 	}
 	
 }

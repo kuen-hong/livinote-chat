@@ -109,6 +109,11 @@
 			    	//console.log(JSON.stringify(resp.body));
 			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 			    });
+			    stompClient.subscribe('/user/queue/specUser', function (resp) {
+			    	var message = JSON.parse(resp.body);
+			    	//console.log(JSON.stringify(resp.body));
+			    	$('#conversation').append('<div style="background-color: red;" class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
+			    });
 			});
 			
 			userId = $('#yourId').val();

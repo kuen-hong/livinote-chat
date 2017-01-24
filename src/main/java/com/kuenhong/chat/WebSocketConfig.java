@@ -14,8 +14,13 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 	
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/chatting");
-		registry.setApplicationDestinationPrefixes("/app");
+		/**
+		 * for destinations to be path-like strings where "/topic/.." implies publish-subscribe (one-to-many)
+		 * and "/queue/" implies point-to-point (one-to-one) message exchanges.
+		 */
+		registry.enableSimpleBroker("/chatting", "/topic", "/queue");
+		registry.setApplicationDestinationPrefixes("/app", "/user");
+		registry.setUserDestinationPrefix("/user");
 	}
 
 	@Override
