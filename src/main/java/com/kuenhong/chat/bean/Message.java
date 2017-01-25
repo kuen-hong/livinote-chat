@@ -5,6 +5,15 @@ public class Message {
 	private String userId;
 	private String msg;
 	
+	public Message() {
+		
+	}
+	
+	public Message(String userId, String msg) {
+		this.userId = userId;
+		this.msg = msg;
+	}
+	
 	public String getUserId() {
 		return userId;
 	}

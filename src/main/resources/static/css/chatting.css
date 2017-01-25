@@ -1,0 +1,21 @@
+.row {
+	margin: 0;
+}
+.row-custom {
+	position: absolute;
+	height: 75%;
+	width: 100%;
+    top: 50px;
+    left: 0;
+}
+#conversation {
+    max-height: 90%;
+    margin: 5px 3px;
+    padding: 0px 10px;
+    overflow: scroll;
+    word-wrap: break-word;
+}
+.boxText {
+	display: block;
+    width: 100%;
+}

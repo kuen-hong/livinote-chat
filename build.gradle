@@ -16,7 +16,7 @@ apply plugin: 'org.springframework.boot'
 
 jar {
     baseName = 'livinote-chat'
-    version = '1.0.0'
+    version = '1.1.0'
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,8 +25,15 @@ repositories {
     mavenCentral()
 }
 
+// exclude dev tools
+bootRepackage {
+	mainClass = 'com.kuehong.chat.Application'
+	excludeDevtools = true
+}
+
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-websocket")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-devtools")
     compile("org.webjars:webjars-locator")
     compile("org.webjars:sockjs-client:1.0.2")
@@ -34,6 +41,7 @@ dependencies {
     compile("org.webjars:bootstrap:3.3.7")
     compile("org.webjars:font-awesome:4.7.0")
     compile("org.webjars:jquery:3.1.0")
+    compile("net.sourceforge.nekohtml:nekohtml:1.9.22") // need by thymeleaf for LEGACYHTML5
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
