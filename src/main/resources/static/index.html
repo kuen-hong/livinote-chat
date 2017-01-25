@@ -12,16 +12,36 @@
 			margin-left: 0;
 			margin-right: 0;
 		}
+		header h1 {
+			animation-name: colorful;
+    		animation-duration: 4s;
+    		animation-iteration-count: infinite;
+		}
+		.box {
+			display: block;
+			padding: 30px;
+		}
+		@keyframes colorful {
+			0%   {color: red;}
+			25%  {color: yellow;}
+			50%  {color: blue;}
+			100% {color: green;}
+		} 
 	</style>
 	<script src="/webjars/jquery/jquery.min.js"></script>
 	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div class="row">
-		<div class="col-lg-1"></div>
-		<div class="col-md-6 col-lg-5"><a href="./chatting.html">Chatting Room</a></div>
-		<div class="col-md-6 col-lg-5">Playing Room, Coming soon...</div>
-		<div class="col-lg-1"></div>
+		<div class="col-xs-12">
+			<header>
+				<h1 class="text-center">LiviNote</h1>
+			</header>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-6"><a href="./chatting.html"><div class="box">Chatting Room</div></a></div>
+		<div class="col-xs-12 col-md-6"><div class="box">Playing Room, Coming soon...</div></div>
 	</div>
 </body>
 </html>
