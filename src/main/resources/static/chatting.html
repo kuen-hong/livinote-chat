@@ -84,12 +84,11 @@
 			    console.log('Connected: ' + frame);
 			    stompClient.subscribe('/chatting/msg', function (resp) {
 			    	var message = JSON.parse(resp.body);
-			    	//console.log(JSON.stringify(resp.body));
 			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 			    });
-			    stompClient.subscribe('/user/queue/specUser', function (resp) {
+			    stompClient.subscribe('/user/queue/chat.message', function (resp) {
 			    	var message = JSON.parse(resp.body);
-			    	//console.log(JSON.stringify(resp.body));
+			    	console.log(message);
 			    	$('#conversation').append('<div style="background-color: red;" class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 			    });
 			});

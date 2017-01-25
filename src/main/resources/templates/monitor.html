@@ -12,7 +12,17 @@
 		stompClient.connect({}, function(frame) {
 	    	console.log('Connected: ' + frame);
 	    	stompClient.subscribe('/topic/activeUsers', function (resp) {
-	    		console.log(JSON.stringify(resp.body));
+	    		//console.log(resp.body);
+	    		var activeUsers = JSON.parse(resp.body);
+	    		$('#users').empty();
+	    		for (var i = 0, leng = activeUsers.length; i < leng; i++) {
+	    			var user = activeUsers[i];
+	    			$('#users').append('<tr data-userid="'+user.userId+'">'+
+	    					'<td>'+user.sessionId+'</td>'+
+	    					'<td>'+user.userId+'</td>'+
+	    					'<td><button onclick="sayHello(\''+user.sessionId+'\')">Say hello to '+user.userId+'</button></td>'+
+	    					'</tr>');
+	    		}
 	    	});
 		});
 		
@@ -34,6 +44,12 @@
 				})
 			});
 		});
+		
+		function sayHello(sessionId) {
+			if (stompClient) {
+				stompClient.send('/app/chat.private.'+sessionId, {}, JSON.stringify({'userId': '', 'msg': 'hello, i\'m system manager.'}));
+			}
+		}
    	</script>
 </head>
 <body>
@@ -46,9 +62,10 @@
     		<td th:text="${book}">book name</td>
     	</tr>
     </table>
-    <input type="text" name="userId" id="userId">
-    <br>
-    <img src="" alt="test img">
-    <button type="button" id="postHello">click to send</button>
+    <hr>
+    <table>
+    	<thead></thead>
+    	<tbody id="users"></tbody>
+    </table>
 </body>
 </html>

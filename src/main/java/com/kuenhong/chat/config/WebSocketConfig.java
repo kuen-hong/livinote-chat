@@ -21,7 +21,7 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 		 * and "/queue/" implies point-to-point (one-to-one) message exchanges.
 		 */
 		registry.enableSimpleBroker("/chatting", "/topic", "/queue");
-		registry.setApplicationDestinationPrefixes("/app", "/user");
+		registry.setApplicationDestinationPrefixes("/app");
 		registry.setUserDestinationPrefix("/user");
 	}
 
@@ -30,21 +30,21 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 		registry.addEndpoint("/chat").withSockJS();
 	}
 	
-	@Bean
-    public PresenceChannelInterceptor presenceChannelInterceptor() {
-        return new PresenceChannelInterceptor();
-    }
-	
-	@Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.setInterceptors(presenceChannelInterceptor());
-    }
- 
-    @Override
-    public void configureClientOutboundChannel(ChannelRegistration registration) {
-        registration.taskExecutor().corePoolSize(8);
-        registration.setInterceptors(presenceChannelInterceptor());
-    }
+//	@Bean
+//    public PresenceChannelInterceptor presenceChannelInterceptor() {
+//        return new PresenceChannelInterceptor();
+//    }
+//	
+//	@Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.setInterceptors(presenceChannelInterceptor());
+//    }
+// 
+//    @Override
+//    public void configureClientOutboundChannel(ChannelRegistration registration) {
+//        registration.taskExecutor().corePoolSize(8);
+//        registration.setInterceptors(presenceChannelInterceptor());
+//    }
     
     @Bean(name = "activeUserRepository")
 	public ActiveUserRepository activeUserRepository() {

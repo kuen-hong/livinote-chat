@@ -22,7 +22,7 @@ public class StompDisconnectEvent implements ApplicationListener<SessionDisconne
 	@Override
 	public void onApplicationEvent(SessionDisconnectEvent event) {
 		StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-		LOG.info("in StompDisconnectEvent, headers="+headers);
+		//LOG.info("in StompDisconnectEvent, headers="+headers);
 		
 		activeUserRepository.removeUser(headers.getSessionId());
 		msgTemplate.convertAndSend("/topic/activeUsers", activeUserRepository.getActiveUsers());
