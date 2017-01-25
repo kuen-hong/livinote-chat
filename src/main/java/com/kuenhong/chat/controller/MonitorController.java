@@ -25,16 +25,16 @@ import com.kuenhong.chat.bean.Message;
 import com.kuenhong.chat.event.ActiveUserRepository;
 
 @Controller
-public class HelloController {
+public class MonitorController {
 	
-	private final Log LOG = LogFactory.getLog(HelloController.class);
+	private final Log LOG = LogFactory.getLog(MonitorController.class);
 	
 	@Autowired
 	SimpMessagingTemplate msgTemplate;
 	@Autowired
 	ActiveUserRepository activeUserRepository;
 
-	@GetMapping("/hello")
+	@GetMapping("/monitor")
 	public String indexPage(Model model, @RequestParam(value = "id", required = false) String id) {
 		model.addAttribute("name", "Jackson");
 		model.addAttribute("books", Arrays.asList("Spring 4", "Spring Boot 1.4.0", "Websocket"));
@@ -49,7 +49,7 @@ public class HelloController {
 		}
 		*/
 		msgTemplate.convertAndSend("/chatting/msg", new Message("", "system page, hello"));
-		return "index";
+		return "monitor";
 	}
 	
 	@ResponseBody
