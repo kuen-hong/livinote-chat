@@ -4,13 +4,21 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Livinote</title>
+	<title>LiviNote</title>
 	<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<style>
+		body {
+			background-color: #edeff0;
+		}
 		.row {
 			margin-left: 0;
 			margin-right: 0;
+		}
+		@keyframes colorful {
+			0%   {color: red;}
+			25%  {color: yellow;}
+			50%  {color: blue;}
+			100% {color: green;}
 		}
 		header h1 {
 			animation-name: colorful;
@@ -19,14 +27,31 @@
 		}
 		.box {
 			display: block;
-			padding: 30px;
+			text-align: center;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 5px 5px 0 0;
 		}
-		@keyframes colorful {
-			0%   {color: red;}
-			25%  {color: yellow;}
-			50%  {color: blue;}
-			100% {color: green;}
-		} 
+		div.box > div:first-of-type {
+			font-size: 24px;
+			text-align: left;
+			padding: 5px 10px 5px;
+			border-radius: 5px 5px 0 0;
+		}
+		.jumbotron {
+			background-color: #fff;
+		}
+		.color1 {
+			background-color: #e5676d;
+		}
+		.color2 {
+			background-color: #4f6f8f;
+		}
+		.glyphicon {
+			color: white;
+		}
+		span.warn {
+			color: red;
+		}
 	</style>
 	<script src="/webjars/jquery/jquery.min.js"></script>
 	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
@@ -40,8 +65,88 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-xs-12 col-md-6"><a href="./chatting.html"><div class="box">Chatting Room</div></a></div>
-		<div class="col-xs-12 col-md-6"><div class="box">Playing Room, Coming soon...</div></div>
+		<div class="col-xs-12 col-md-6">
+			<div class="box">
+				<div class="color2">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+				</div>
+				<div class="jumbotron">
+					<h1>Chatting Room</h1>
+					<p>Just starting a simple chat, you don't know who are there.</p>
+					<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#nicknameModal">Join now</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-6">
+			<div class="box">
+				<div class="color1">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+				</div>
+				<div class="jumbotron">
+					<h1>Playing Room</h1>
+					<p>Coming soon...</p>
+				</div>
+			</div>
+		</div>
 	</div>
+	<!-- input nickname modal -->
+	<div id="nicknameModal" class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">You need a nickname</h4>
+	      </div>
+	      <div class="modal-body">
+	        <p>Input a nickname to join:</p><input type="text" name="nickname" id="nickname" oninput="checkNickname()">
+	        <span class="warn"></span>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-primary" id="joinBtn" disabled onclick="join()">Join</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<script>
+		$(function() {
+			$('#nicknameModal').on('show.bs.modal', function() {
+				$('#nickname').val('').focus();
+				checkNickname();
+				$('span.warn').text('');
+			});
+		});
+		
+		function checkNickname() {
+			if ($('#nickname').val()) {
+				$('#joinBtn').prop("disabled", false);
+			} else {
+				$('#joinBtn').prop("disabled", true);
+			}
+		}
+		
+		function join() {
+			$.ajax({
+				type: 'POST',
+				contentType: 'application/json; charset=utf-8',
+				url: './existOrNot',
+				cache: false,
+		        processData: false,
+				data: JSON.stringify({"userId": $('#nickname').val()}),
+				dataType: 'json',
+				error: function(e) {
+					console.log("ERROR: ", e);
+				},
+				complete: function(e) {
+				}
+			}).done(function(resp) {
+				if (resp.status == false) {
+					location.href = "./chatting.html";
+				} else {
+					$('span.warn').text('Nickname exists, please use another one.');
+				}
+			});
+		}
+	</script>
 </body>
 </html>
