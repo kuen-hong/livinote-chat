@@ -27,7 +27,7 @@ repositories {
 
 // exclude dev tools
 bootRepackage {
-	mainClass = 'com.kuehong.chat.Application'
+	mainClass = 'com.kuenhong.chat.Application'
 	excludeDevtools = true
 }
 
