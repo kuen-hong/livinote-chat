@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ public class MonitorController {
 	
 	@ResponseBody
 	@PostMapping("/existOrNot")
-	public Map<String, Object> checkNicknameInRepository(@RequestBody ActiveUser joinUser) {
+	public Map<String, Object> checkNicknameInRepository(@RequestBody ActiveUser joinUser, HttpSession session) {
 		Map<String, Object> returnMap = new HashMap<>();
 		returnMap.put("status", Boolean.FALSE);
 		for (Map.Entry<String, String> entry : activeUserRepository.getActiveSessions().entrySet()) {
@@ -52,6 +54,9 @@ public class MonitorController {
 				returnMap.put("status", Boolean.TRUE);
 				break;
 			}
+		}
+		if (returnMap.get("status").equals(Boolean.FALSE)) {
+			session.setAttribute("userId", joinUser.getUserId());
 		}
 		return returnMap;
 	}
