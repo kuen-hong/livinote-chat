@@ -8,10 +8,6 @@
 	<link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/css/chatting.css" rel="stylesheet">
-	<script src="/webjars/jquery/jquery.min.js"></script>
-	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
 	<div class="row">
@@ -33,10 +29,13 @@
     					<form class="navbar-form navbar-left">
         					<div class="form-group">
         						<label for="yourId">Your id:</label>
-          						<input type="text" id="yourId" class="form-control" placeholder="Your id here...">
+          						<input type="text" id="yourId" class="form-control" placeholder="Your id here..." th:value="${userId}" disabled>
         					</div>
-        					<button type="button" id="connect" class="btn btn-default">Connect</button>
       					</form>
+      					<ul class="nav navbar-nav pull-right">
+      						<li th:if="${isAdmin}"><a href="./monitor">Monitor</a></li>
+      						<li><a href="./">Exit</a></li>
+      					</ul>
     				</div>
   				</div>
 			</nav>
@@ -55,9 +54,8 @@
         					<div class="form-group">
         						<label for="message" class="col-sm-2">Message:</label>
         						<div class="col-sm-10">
-        							<input type="text" id="message" class="form-control" placeholder="Message here..." 
-        								disabled onkeypress="keyPressListener(event)">
-        							<button type="button" id="send" class="btn btn-default" disabled>Send</button>
+        							<input type="text" id="message" class="form-control" placeholder="Message here..." onkeypress="keyPressListener(event)">
+        							<button type="button" id="send" class="btn btn-default">Send</button>
         						</div>
         					</div>
         					
@@ -67,43 +65,41 @@
 			</nav>
 		</div>
 	</div>
-	<script>
+	<script src="/webjars/jquery/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+	<script th:inline="javascript">
 	var stompClient = null;
-	var userId = null;
+	var userId = [[${userId}]];
+	//console.log(userId);
+	
+	// init websocket
+	var socket = new SockJS('/chat');
+	stompClient = Stomp.over(socket);
+	stompClient.connect({'userId': userId}, function(frame) {
+	    //console.log('Connected: ' + frame);
+	    stompClient.subscribe('/chatting/msg', function (resp) {
+	    	var message = JSON.parse(resp.body);
+	    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
+	    });
+	    stompClient.subscribe('/user/queue/chat.message', function (resp) {
+	    	var message = JSON.parse(resp.body);
+	    	$('#conversation').append('<div style="background-color: red;" class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
+	    });
+	});
 	
 	$(function() {
 		$("form").on('submit', function (e) {
 	        e.preventDefault();
 	    });
 		
-		// init websocket
-		$('#connect').click(function() {
-			var socket = new SockJS('/chat');
-			stompClient = Stomp.over(socket);
-			stompClient.connect({'userId': $('#yourId').val()}, function(frame) {
-			    //console.log('Connected: ' + frame);
-			    stompClient.subscribe('/chatting/msg', function (resp) {
-			    	var message = JSON.parse(resp.body);
-			    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
-			    });
-			    stompClient.subscribe('/user/queue/chat.message', function (resp) {
-			    	var message = JSON.parse(resp.body);
-			    	$('#conversation').append('<div style="background-color: red;" class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
-			    });
-			});
-			
-			userId = $('#yourId').val();
-			$(this).prop("disabled", true);
-			$('#yourId').prop("disabled", true);
-			$('#message').prop("disabled", false);
-			$('#send').prop("disabled", false);
-		});
-		
 		$('#send').click(function() {
 			stompClient.send("/app/typing", {}, JSON.stringify({'userId': userId, 'msg': $('#message').val()}));
 			$('#message').val("").focus();
 		});
 	});
+	
 	function keyPressListener(e) {
 		if (e.keyCode == 13) {
 			$('#send').trigger('click');

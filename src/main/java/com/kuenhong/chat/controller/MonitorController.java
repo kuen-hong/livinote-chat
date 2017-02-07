@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +47,7 @@ public class MonitorController {
 	
 	@ResponseBody
 	@PostMapping("/existOrNot")
-	public Map<String, Object> checkNicknameInRepository(@RequestBody ActiveUser joinUser) {
+	public Map<String, Object> checkNicknameInRepository(@RequestBody ActiveUser joinUser, HttpSession session) {
 		Map<String, Object> returnMap = new HashMap<>();
 		returnMap.put("status", Boolean.FALSE);
 		for (Map.Entry<String, String> entry : activeUserRepository.getActiveSessions().entrySet()) {
@@ -53,7 +56,16 @@ public class MonitorController {
 				break;
 			}
 		}
+		if (returnMap.get("status").equals(Boolean.FALSE)) {
+			session.setAttribute("userId", joinUser.getUserId());
+		}
 		return returnMap;
+	}
+	
+	@SubscribeMapping("/activeUsers")
+	public List<ActiveUser> getConnectedUsersWhenSubscribe() {
+		LOG.info("execute getConnectedUsersWhenSubscribe");
+		return activeUserRepository.getActiveUsers();
 	}
 	
 	@SendTo("/topic/activeUsers")

@@ -93,32 +93,34 @@
 	<div id="nicknameModal" class="modal fade" tabindex="-1" role="dialog">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
+	      <form id="joinForm" method="post">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 	        <h4 class="modal-title">You need a nickname</h4>
 	      </div>
 	      <div class="modal-body">
-	        <p>Input a nickname to join:</p><input type="text" name="nickname" id="nickname" oninput="checkNickname()">
+	        <p>Input a nickname to join:</p><input type="text" name="username" id="username" oninput="checkNickname()">
 	        <span class="warn"></span>
 	      </div>
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        <button type="button" class="btn btn-primary" id="joinBtn" disabled onclick="join()">Join</button>
 	      </div>
+	      </form>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 	<script>
 		$(function() {
 			$('#nicknameModal').on('show.bs.modal', function() {
-				$('#nickname').val('').focus();
+				$('#username').val('').focus();
 				checkNickname();
 				$('span.warn').text('');
 			});
 		});
 		
 		function checkNickname() {
-			if ($('#nickname').val()) {
+			if ($('#username').val()) {
 				$('#joinBtn').prop("disabled", false);
 			} else {
 				$('#joinBtn').prop("disabled", true);
@@ -132,7 +134,7 @@
 				url: './existOrNot',
 				cache: false,
 		        processData: false,
-				data: JSON.stringify({"userId": $('#nickname').val()}),
+				data: JSON.stringify({"userId": $('#username').val()}),
 				dataType: 'json',
 				error: function(e) {
 					console.log("ERROR: ", e);
@@ -141,7 +143,7 @@
 				}
 			}).done(function(resp) {
 				if (resp.status == false) {
-					location.href = "./chatting.html";
+					$('#joinForm').submit();
 				} else {
 					$('span.warn').text('Nickname exists, please use another one.');
 				}
