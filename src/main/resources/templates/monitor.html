@@ -2,7 +2,26 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Chatting Room Monitor</title>
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+	<div class="row">
+		<div class="col-md-12"><h1 th:text="'Hello, ' + ${session.userId} + '!'">hello, your name</h1></div>
+	</div>
+    <hr>
+    <div class="row">
+    	<div class="col-md-12">
+    		<div class="table-responsive">
+		    	<table class="table table-striped">
+			    	<thead></thead>
+			    	<tbody id="users"></tbody>
+			    </table>
+		    </div>
+    	</div>
+    </div>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -11,16 +30,20 @@
 		var stompClient = Stomp.over(socket);
 		stompClient.connect({}, function(frame) {
 	    	//console.log('Connected: ' + frame);
-	    	stompClient.subscribe('/topic/activeUsers', function (resp) {
-	    		//console.log(resp.body);
+	    	stompClient.subscribe('/app/activeUsers', function (resp) {
 	    		var activeUsers = JSON.parse(resp.body);
+	    		$('thead').empty()
+	    				.append('<tr>'+
+	    						'<th>#</th>'+
+	    						'<th colspan="2"><span class="badge">'+activeUsers.length+'</span> user(s)</th>'+
+	    						'</tr>');
 	    		$('#users').empty();
 	    		for (var i = 0, leng = activeUsers.length; i < leng; i++) {
 	    			var user = activeUsers[i];
-	    			$('#users').append('<tr data-userid="'+user.userId+'">'+
-	    					'<td>'+user.sessionId+'</td>'+
+	    			$('#users').append('<tr data-userid="'+user.userId+'" data-sessionid="'+user.sessionId+'">'+
+	    					'<td>'+(i+1)+'</td>'+
 	    					'<td>'+user.userId+'</td>'+
-	    					'<td><button onclick="sayHello(\''+user.sessionId+'\')">Say hello to '+user.userId+'</button></td>'+
+	    					'<td><button class="btn btn-default" onclick="sayHello(\''+user.sessionId+'\')">Say hello to '+user.userId+'</button></td>'+
 	    					'</tr>');
 	    		}
 	    	});
@@ -32,21 +55,5 @@
 			}
 		}
    	</script>
-</head>
-<body>
-    <p th:text="'Hello, ' + ${name} + '!'">hello, your name</p>
-    <table>
-    	<tr>
-    		<th>Book name</th>
-    	</tr>
-    	<tr th:each="book : ${books}">
-    		<td th:text="${book}">book name</td>
-    	</tr>
-    </table>
-    <hr>
-    <table>
-    	<thead></thead>
-    	<tbody id="users"></tbody>
-    </table>
 </body>
 </html>

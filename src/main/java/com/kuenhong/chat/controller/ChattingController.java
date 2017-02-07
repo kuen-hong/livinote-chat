@@ -20,7 +20,9 @@ public class ChattingController {
 	
 	@GetMapping("/chatting")
 	public String chatPage(Model model, HttpSession session) {
-		model.addAttribute("userId", (String)session.getAttribute("userId"));
+		String userId = (String)session.getAttribute("userId");
+		model.addAttribute("userId", userId);
+		model.addAttribute("isAdmin", userId.startsWith("admin"));
 		return "chatting";
 	}
 

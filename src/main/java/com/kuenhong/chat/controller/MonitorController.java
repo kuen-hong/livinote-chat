@@ -15,6 +15,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,6 +60,12 @@ public class MonitorController {
 			session.setAttribute("userId", joinUser.getUserId());
 		}
 		return returnMap;
+	}
+	
+	@SubscribeMapping("/activeUsers")
+	public List<ActiveUser> getConnectedUsersWhenSubscribe() {
+		LOG.info("execute getConnectedUsersWhenSubscribe");
+		return activeUserRepository.getActiveUsers();
 	}
 	
 	@SendTo("/topic/activeUsers")
