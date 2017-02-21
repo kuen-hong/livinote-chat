@@ -31,21 +31,10 @@
 		stompClient.connect({}, function(frame) {
 	    	//console.log('Connected: ' + frame);
 	    	stompClient.subscribe('/app/activeUsers', function (resp) {
-	    		var activeUsers = JSON.parse(resp.body);
-	    		$('thead').empty()
-	    				.append('<tr>'+
-	    						'<th>#</th>'+
-	    						'<th colspan="2"><span class="badge">'+activeUsers.length+'</span> user(s)</th>'+
-	    						'</tr>');
-	    		$('#users').empty();
-	    		for (var i = 0, leng = activeUsers.length; i < leng; i++) {
-	    			var user = activeUsers[i];
-	    			$('#users').append('<tr data-userid="'+user.userId+'" data-sessionid="'+user.sessionId+'">'+
-	    					'<td>'+(i+1)+'</td>'+
-	    					'<td>'+user.userId+'</td>'+
-	    					'<td><button class="btn btn-default" onclick="sayHello(\''+user.sessionId+'\')">Say hello to '+user.userId+'</button></td>'+
-	    					'</tr>');
-	    		}
+	    		showActiveUsers(JSON.parse(resp.body));
+	    	});
+	    	stompClient.subscribe('/topic/activeUsers', function (resp) {
+	    		showActiveUsers(JSON.parse(resp.body));
 	    	});
 		});
 		
@@ -53,6 +42,22 @@
 			if (stompClient) {
 				stompClient.send('/app/chat.private.'+sessionId, {}, JSON.stringify({'userId': '', 'msg': 'hello, i\'m system manager.'}));
 			}
+		}
+		function showActiveUsers(activeUsers) {
+    		$('thead').empty()
+    				.append('<tr>'+
+    						'<th>#</th>'+
+    						'<th colspan="2"><span class="badge">'+activeUsers.length+'</span> user(s)</th>'+
+    						'</tr>');
+    		$('#users').empty();
+    		for (var i = 0, leng = activeUsers.length; i < leng; i++) {
+    			var user = activeUsers[i];
+    			$('#users').append('<tr data-userid="'+user.userId+'" data-sessionid="'+user.sessionId+'">'+
+    					'<td>'+(i+1)+'</td>'+
+    					'<td>'+user.userId+'</td>'+
+    					'<td><button class="btn btn-default" onclick="sayHello(\''+user.sessionId+'\')">Say hello to '+user.userId+'</button></td>'+
+    					'</tr>');
+    		}
 		}
    	</script>
 </body>
