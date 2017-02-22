@@ -63,11 +63,6 @@ public class MonitorController {
 	}
 	
 	@SubscribeMapping("/activeUsers")
-	public List<ActiveUser> getConnectedUsersWhenSubscribe() {
-		LOG.info("execute getConnectedUsersWhenSubscribe");
-		return activeUserRepository.getActiveUsers();
-	}
-	
 	@SendTo("/topic/activeUsers")
 	public List<ActiveUser> getConnectedUsers() {
 		LOG.info("execute getConnectedUsers");
