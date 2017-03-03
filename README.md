@@ -6,14 +6,8 @@ Spring stomp test, join a chat room with a nickname.
 * Check user nickname when join to chat room for preventing duplicated.
 * Other user can chat in the chat room and you don't know who are there, because it does not show your nickname.
 
-## Usage
+## Run the app
 
 ```sh
 gradle bootRun
 ```
-
-## Abstract of version
-
-1.1.1:
-
-* Fixed `monitor.html` subscribe endpoint.
