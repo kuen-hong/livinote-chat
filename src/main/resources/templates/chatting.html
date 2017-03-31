@@ -79,14 +79,20 @@
 	stompClient = Stomp.over(socket);
 	stompClient.connect({'userId': userId}, function(frame) {
 	    //console.log('Connected: ' + frame);
-	    stompClient.subscribe('/chatting/msg', function (resp) {
+	    stompClient.subscribe('/chatting/msg', function(resp) {
 	    	var message = JSON.parse(resp.body);
 	    	$('#conversation').append('<div class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 	    });
-	    stompClient.subscribe('/user/queue/chat.message', function (resp) {
+	    stompClient.subscribe('/user/queue/chat.message', function(resp) {
 	    	var message = JSON.parse(resp.body);
 	    	$('#conversation').append('<div style="background-color: red;" class="boxText">'+message.msg+'</div>').scrollTop($('#conversation')[0].scrollHeight);
 	    });
+	    stompClient.subscribe('/user/queue/kickout', function(resp) {
+	    	var signal = JSON.parse(resp.body);
+	    	setTimeout(function() {
+	    		location.href = signal.url;
+	    	}, signal.timeout*1000);
+	    })
 	});
 	
 	$(function() {

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.kuenhong.chat.bean.ActiveUser;
+import com.kuenhong.chat.bean.KickoutSignal;
 import com.kuenhong.chat.bean.Message;
 import com.kuenhong.chat.event.ActiveUserRepository;
 
@@ -72,5 +73,10 @@ public class MonitorController {
 	@MessageMapping("/chat.private.{sessionId}")
 	public void sendToSomeone(@Payload Message msg, @DestinationVariable("sessionId") String sessionId) {
 		msgTemplate.convertAndSend("/queue/chat.message-user"+sessionId, msg);
+	}
+	
+	@MessageMapping("/kickout.private.{sessionId}")
+	public void kickout(@Payload KickoutSignal signal, @DestinationVariable("sessionId") String sessionId) {
+		msgTemplate.convertAndSend("/queue/kickout-user"+sessionId, signal);
 	}
 }
